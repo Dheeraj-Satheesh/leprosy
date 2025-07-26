@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Leprosy Prediction Survey</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="progress-bar">
+        <div class="progress-bar-fill" id="progressBar"></div>
+    </div>
+    <form id="leprosyForm">
+        <div class="form-section active" id="section1">
+            <h2>Personal Information</h2>
+            <label>Name of the Patient</label>
+            <input type="text" name="name" required />
+            <label>Age of the Patient</label>
+            <input type="number" name="Age" required />
+            <label>Weight of the Patient</label>
+            <input type="number" name="Weight" required />
+            <label>Family/Close contacts - History of Leprosy Patient</label>
+            <select name="family_history" required>
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <button type="button" onclick="nextSection()">Next</button>
+        </div>
+
+        <div class="form-section" id="section2">
+            <h2>Face Symptoms</h2>
+            <label>Loss of eyebrows Full/partial</label>
+            <select name="loss_eyebrow">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Nasal infiltration (Saddle Nose Deformity)</label>
+            <select name="nasal">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Thickening of ear lobes</label>
+            <select name="ear_lobes">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Blink absent less than 6 months(corneal reflex)</label>
+            <select name="blink_lt6">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Blink absent more than 6 months(corneal reflex)</label>
+            <select name="blink_gt6">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Inability to close eyes less than 6 months(Lagophthalmos)</label>
+            <select name="eye_close_lt6">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Inability to close eyes more than 6 months(Lagophthalmos)</label>
+            <select name="eye_close_gt6">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Watering of eyes</label>
+            <select name="eye_watering">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <button type="button" onclick="previousSection()">Previous</button>
+            <button type="button" onclick="nextSection()">Next</button>
+        </div>
+
+        <!-- Section 3: Skin Related symptoms -->
+        <div class="form-section" id="section3">
+            <h2>Skin Symptoms</h2>
+
+            <label>Any changes in the skin color (Hypo pigmentation) with partial or complete loss of sensation</label>
+            <select name="Any changes in the skin color( Hypo pigmentation) with partial or complete loss of sensation">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Any changes in the skin color (Erythematous) with partial or complete loss of sensation</label>
+            <select name="Any changes in the skin color(Erythematous) with partial or complete loss of sensation">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Any changes in the skin color (Hypo pigmentation) with sensation</label>
+            <select name="Any changes in the skin color( Hypo pigmentation) with  sensation">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Any changes in the skin color (Erythematous) with sensation</label>
+            <select name="Any changes in the skin color(Erythematous) with  sensation">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Thickened skin on the patches</label>
+            <select name="Thickend skin on the patches">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Shiny or oily skin</label>
+            <select name="Shiny or oily skin">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Nodules on skin</label>
+            <select name="Nodules on skin">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label> Skin Lesions- Raised, Red, Warmth,Painful (Hypo/Erythema)</label>
+            <select name="Painful Skin Lesions">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Nodules-Painful swellings under the skin</label>
+            <select name="Painful Nodules">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Itching Skin lesion/Nodules</label>
+            <select name="Painful Skin Lesions/Nodules">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Duration of skin disease/Nodules (< 1 M,1-3 M,3-6 M,7-12 M,>12 M)</label>
+            <select name="Duration of skin disease/Nodules (< 1 M,1-3 M,3-6 M,7-12 M,>12 M)">
+                <option value="">--Select--</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
+            <button type="button" onclick="previousSection()">Previous</button>
+            <button type="button" onclick="nextSection()">Next</button>
+        </div>
+        <!-- Section-4 Hand Related Symptoms> -->
+        <div class="form-section" id="section4">
+            <h2>Hand Symptoms</h2>
+            <label>Loss of sensation in the Palm(S)</label>
+            <select name="palm_sensation">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Numbness in hands</label>
+            <select name="numb_hands">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Tingling in fingers/hands</label>
+            <select name="tingle_hands">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Weakness in hand(s) when grasping or holding objects</label>
+            <select name="weak_grip">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Inability to feel cold or hot objects</label>
+            <select name="temp_sense_hand">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Difficulty in buttoning up shirt/writing</label>
+            <select name="button_difficulty">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Ulnar claw - Little & Ring fingers claw less than 6 months</label>
+            <select name="ulnar_lt6">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Ulnar claw - Little & Ring fingers claw more than 6 months</label>
+            <select name="ulnar_gt6">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Median Claw - Middle, Index, Thumb claw less than 6 months</label>
+            <select name="median_lt6">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Median Claw - Middle, Index, Thumb claw more than 6 months</label>
+            <select name="median_gt6">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Radial sensory loss (affecting the lateral 3 ½ digits, and associated with the area on the dorsum of
+                the hand)</label>
+            <select name="radial_sensory">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Wrist Drop- Unable to do wrist up less than 6 months</label>
+            <select name="wrist_up_lt6">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Wrist Drop- Unable to do wrist up more than 6 months</label>
+            <select name="wrist_up_gt6">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Painless wounds or burns on palms</label>
+            <select name="burns_palm">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <button type="button" onclick="previousSection()">Previous</button>
+            <button type="button" onclick="nextSection()">Next</button>
+        </div>
+        <!-- Section 5: Foot Symptoms -->
+        <div class="form-section" id="section5">
+            <h2>Foot Symptoms</h2>
+            <label> Lateral Popliteal Nerve sensory loss-lower leg over the posterolateral part of the leg and the knee
+                joint.
+            </label>
+            <select name="lateral_popliteal">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Foot Drop -Unable to do foot up / Weakness / Dragging the foot while walking less than 6
+                months</label>
+            <select
+                name="Unable to do foot up (foot drop) /Weakness/Dragging the foot while walking less than 6 months">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Foot Drop- Unable to do foot up / Weakness / Dragging the foot while walking for more than 6
+                months</label>
+            <select
+                name="Unable to do foot up(foot drop) /Weakness/Dragging the foot while walking for more than 6 months">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Numbness in the foot/feet</label>
+            <select name="Numbness in the foot/feet">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Tingling in foot/feet/toes</label>
+            <select name="Tingling in foot/feet/toes">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Loss of sensation in sole of foot/feet</label>
+            <select name="Loss of sensation in sole of foot/feet">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Ulceration in foot/feet; painless wounds or burns on foot/feet</label>
+            <select name="Ulceration in foot /feet; painless wounds or burns on foot/feet">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Clawing (toes)</label>
+            <select name="Clawing (toes )">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <label>Slipping of slippers while walking in the foot/feet</label>
+            <select name="Slipping of slippers while walking in the foot/feet">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <button type="button" onclick="previousSection()">Previous</button>
+            <button type="button" onclick="nextSection()">Next</button>
+        </div>
+        <!-- sECTION-6 RELATED TO COUNT OF SKIN LESIONS  -->
+        <div class="form-section" id="section6">
+            <h2>Skin Symptoms</h2>
+            <label>Number of skin lesions/Nodules less than 5</label>
+            <select name="Number of skin lessions/Nodules less than 5">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Number of skin lesions/Nodules greater than 5</label>
+            <select name="Number of skin lesions /Nodules greater than 5">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <button type="button" onclick="previousSection()">Previous</button>
+            <button type="button" onclick="nextSection()">Next</button>
+        </div>
+        <!-- Section 7: Treatment History and Submission -->
+        <div class="form-section" id="section7">
+            <h2>Treatment History</h2>
+
+            <label>Not treated MDT</label>
+            <select name="Not treated MDT">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Irregular Treatment MDT</label>
+            <select name="Irregular Treatment MDT">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Completed Treatment MDT</label>
+            <select name="Completed Treatment MDT">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Existing skin lesion /Nodules increasing in size, sudden onset</label>
+            <select name="Existing skin lesion /Nodules increasing in size, sudden onset">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Existing skin lesion /Nodules increasing in size, slow onset</label>
+            <select name="Existing skin lesion /Nodules increasing in size, slow onset">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Appearing New Skin lesions/ Nodules suddenly</label>
+            <select name="Appearing New Skin lesions/ Nodules suddenly">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+
+            <label>Existing skin lesion /Nodules not increasing size /anaesthesia remains same</label>
+            <select name="Existing skin lesion /Nodules  not increasing size /anaesthesia remains same">
+                <option value="">--Select--</option>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+            <button type="button" onclick="previousSection()">Previous</button>
+            <button type="button" onclick="nextSection()">Next</button>
+        </div>
+        <div class="form-section" id="finalSection">
+            <h2>Here is the Detailed Report of the Patient</h2>
+            <button type="button" onclick="previousSection()">Previous</button>
+            <button type="submit">Predict</button>
+        </div>
+    </form>
+    <div id="result" class="result-box"></div>
+    <!-- <script src="script.js"></script> -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
