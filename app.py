@@ -1,10 +1,8 @@
 from flask import Flask, request, jsonify, render_template
 import joblib
-import pandas as pd
 from datetime import datetime
 import os
-
-# Google Sheets setup
+import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -14,10 +12,8 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
-# Load the sklearn model
+# Load the sklearn model and label encoders
 model = joblib.load("model_rf.pkl")
-
-# Load encoders
 label_encoders = {
     'Output_Classification': joblib.load('enc_classification.pkl'),
     'Output_Treatment': joblib.load('enc_treatment.pkl'),
@@ -25,7 +21,7 @@ label_encoders = {
     'Output_ReactionTreatment': joblib.load('enc_reactiontreatment.pkl')
 }
 
-# Feature order for prediction input
+# Feature order expected by the model
 feature_order = [
     "Age", "loss_eyebrow", "nasal", "ear_lobes",
     "blink_lt6", "blink_gt6", "eye_close_lt6", "eye_close_gt6",
@@ -58,11 +54,11 @@ def predict():
     input_features = []
     record = {}
 
-    # Basic fields
+    # Include name and age
     record["Patient_Name"] = data.get("name", "")
     record["Age"] = data.get("Age", "")
 
-    # Convert input into model features
+    # Collect model input features
     for key in feature_order:
         val = data.get(key, "No")
         if isinstance(val, str) and val.lower() == "yes":
@@ -73,10 +69,8 @@ def predict():
             input_features.append(float(val))
         record[key] = val
 
-    # Predict
+    # Get prediction from model
     pred = model.predict([input_features])[0]
-
-    # Decode prediction
     result = {
         'Output_Classification': label_encoders['Output_Classification'].inverse_transform([pred[0]])[0],
         'Output_Treatment': label_encoders['Output_Treatment'].inverse_transform([pred[1]])[0],
@@ -84,30 +78,30 @@ def predict():
         'Output_ReactionTreatment': label_encoders['Output_ReactionTreatment'].inverse_transform([pred[3]])[0],
     }
 
-    # Add to record
+    # Add result and timestamp
     record.update(result)
     record['Timestamp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    # Log to Google Sheets
+    # Send to Google Sheets
     try:
-        scope = [
-            "https://spreadsheets.google.com/feeds",
-            "https://www.googleapis.com/auth/drive"
-        ]
-        creds = ServiceAccountCredentials.from_json_keyfile_name("google_sheets_key.json", scope)
+        scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+        google_creds_dict = json.loads(os.environ["GOOGLE_CREDS_JSON"])
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(google_creds_dict, scope)
         client = gspread.authorize(creds)
         sheet = client.open("Leprosy Submissions").sheet1
 
-        # Append desired data
-        sheet.append_row([
-            record["Patient_Name"],
-            record["Age"],
-            result['Output_Classification'],
-            result['Output_Treatment'],
-            result['Output_ReactionType'],
-            result['Output_ReactionTreatment'],
-            record['Timestamp']
-        ])
+        # If new sheet, insert header
+        if sheet.row_count < 2:
+            header = ["Patient_Name"] + feature_order + list(result.keys()) + ["Timestamp"]
+            sheet.insert_row(header, index=1)
+
+        row = [record["Patient_Name"]] + [record.get(k, "") for k in feature_order] + \
+              [result['Output_Classification'], result['Output_Treatment'],
+               result['Output_ReactionType'], result['Output_ReactionTreatment'],
+               record['Timestamp']]
+
+        sheet.append_row(row)
+
     except Exception as e:
         print("Google Sheets logging failed:", e)
 
