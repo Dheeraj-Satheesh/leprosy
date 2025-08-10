@@ -3,35 +3,61 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Leprosy Prediction Survey</title>
+    <title>Leprosy Case Prediction</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <!-- <link rel="stylesheet" href="style.css"> -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen">
+        <div class="welcome-content">
+            <h1><i class="fas fa-hands-helping"></i> Welcome to Leprosy Prediction Tool</h1>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
     <div class="progress-bar">
         <div class="progress-bar-fill" id="progressBar"></div>
     </div>
     <form id="leprosyForm">
         <div class="form-section active" id="section1">
-            <h2>Personal Information</h2>
-            <label>Name of the Patient</label>
+            <h2><i class="fas fa-user"></i> Personal Information</h2>
+
+            <label><i class="fas fa-user"></i> Name of the Patient</label>
             <input type="text" name="name" required />
-            <label>Age of the Patient</label>
+
+            <!-- New Gender Field -->
+            <label><i class="fas fa-venus-mars"></i> Gender</label>
+            <select name="Gender" required>
+                <option value="">-- Select Gender --</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label><i class="fas fa-calendar"></i> Age of the Patient</label>
             <input type="number" name="Age" required />
-            <label>Weight of the Patient</label>
+
+            <label><i class="fas fa-weight"></i> Weight of the Patient</label>
             <input type="number" name="Weight" required />
-            <label>Family/Close contacts - History of Leprosy Patient</label>
+
+
+            <label><i class="fas fa-users"></i> Family/Close contacts - History of Leprosy Patient</label>
             <select name="family_history" required>
                 <option value="">--Select--</option>
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
             </select>
-            <button type="button" onclick="nextSection()">Next</button>
+
+            <button type="button" class="next-btn" onclick="nextSection()">Next <i
+                    class="fas fa-arrow-right"></i></button>
         </div>
 
         <div class="form-section" id="section2">
-            <h2>Face Symptoms</h2>
+            <h2><i class="fas fa-eye"></i> Face Examination</h2>
             <label>Loss of eyebrows Full/partial</label>
             <select name="loss_eyebrow">
                 <option value="">--Select--</option>
@@ -80,37 +106,39 @@
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
             </select>
-            <button type="button" onclick="previousSection()">Previous</button>
-            <button type="button" onclick="nextSection()">Next</button>
+            <button type="button" class="prev-btn" onclick="previousSection()"><i class="fas fa-arrow-left"></i>
+                Previous</button>
+            <button type="button" class="next-btn" onclick="nextSection()">Next <i
+                    class="fas fa-arrow-right"></i></button>
         </div>
 
         <!-- Section 3: Skin Related symptoms -->
         <div class="form-section" id="section3">
-            <h2>Skin Symptoms</h2>
+            <h2>Skin Examination</h2>
 
             <label>Any changes in the skin color (Hypo pigmentation) with partial or complete loss of sensation</label>
-            <select name="Any changes in the skin color( Hypo pigmentation) with partial or complete loss of sensation">
+            <select name="Changes in the skin color( Hypo pigmentation) with partial or complete loss of sensation">
                 <option value="">--Select--</option>
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
             </select>
 
             <label>Any changes in the skin color (Erythematous) with partial or complete loss of sensation</label>
-            <select name="Any changes in the skin color(Erythematous) with partial or complete loss of sensation">
+            <select name="Changes in the skin color(Erythematous) with partial or complete loss of sensation">
                 <option value="">--Select--</option>
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
             </select>
 
             <label>Any changes in the skin color (Hypo pigmentation) with sensation</label>
-            <select name="Any changes in the skin color( Hypo pigmentation) with  sensation">
+            <select name="Changes in the skin color( Hypo pigmentation) with  sensation">
                 <option value="">--Select--</option>
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
             </select>
 
             <label>Any changes in the skin color (Erythematous) with sensation</label>
-            <select name="Any changes in the skin color(Erythematous) with  sensation">
+            <select name="Changes in the skin color(Erythematous) with  sensation">
                 <option value="">--Select--</option>
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
@@ -137,7 +165,7 @@
                 <option value="Yes">Yes</option>
             </select>
 
-            <label> Skin Lesions- Raised, Red, Warmth,Painful (Hypo/Erythema)</label>
+            <label> Skin Lesions- Raised, Redness, Warmth,Painful (Hypo/Erythema)</label>
             <select name="Painful Skin Lesions">
                 <option value="">--Select--</option>
                 <option value="No">No</option>
@@ -165,12 +193,14 @@
                 <option>4</option>
                 <option>5</option>
             </select>
-            <button type="button" onclick="previousSection()">Previous</button>
-            <button type="button" onclick="nextSection()">Next</button>
+            <button type="button" class="prev-btn" onclick="previousSection()"><i class="fas fa-arrow-left"></i>
+                Previous</button>
+            <button type="button" class="next-btn" onclick="nextSection()">Next <i
+                    class="fas fa-arrow-right"></i></button>
         </div>
         <!-- Section-4 Hand Related Symptoms> -->
         <div class="form-section" id="section4">
-            <h2>Hand Symptoms</h2>
+            <h2>Upper Extremities Examination</h2>
             <label>Loss of sensation in the Palm(S)</label>
             <select name="palm_sensation">
                 <option value="">--Select--</option>
@@ -219,13 +249,13 @@
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
             </select>
-            <label>Median Claw - Middle, Index, Thumb claw less than 6 months</label>
+            <label>Median Claw - Middle, Index, Thumb fingers claw less than 6 months</label>
             <select name="median_lt6">
                 <option value="">--Select--</option>
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
             </select>
-            <label>Median Claw - Middle, Index, Thumb claw more than 6 months</label>
+            <label>Median Claw - Middle, Index, Thumb fingers claw more than 6 months</label>
             <select name="median_gt6">
                 <option value="">--Select--</option>
                 <option value="No">No</option>
@@ -256,12 +286,14 @@
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
             </select>
-            <button type="button" onclick="previousSection()">Previous</button>
-            <button type="button" onclick="nextSection()">Next</button>
+            <button type="button" class="prev-btn" onclick="previousSection()"><i class="fas fa-arrow-left"></i>
+                Previous</button>
+            <button type="button" class="next-btn" onclick="nextSection()">Next <i
+                    class="fas fa-arrow-right"></i></button>
         </div>
         <!-- Section 5: Foot Symptoms -->
         <div class="form-section" id="section5">
-            <h2>Foot Symptoms</h2>
+            <h2>Lower Extremities Examination</h2>
             <label> Lateral Popliteal Nerve sensory loss-lower leg over the posterolateral part of the leg and the knee
                 joint.
             </label>
@@ -322,12 +354,14 @@
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
             </select>
-            <button type="button" onclick="previousSection()">Previous</button>
-            <button type="button" onclick="nextSection()">Next</button>
+            <button type="button" class="prev-btn" onclick="previousSection()"><i class="fas fa-arrow-left"></i>
+                Previous</button>
+            <button type="button" class="next-btn" onclick="nextSection()">Next <i
+                    class="fas fa-arrow-right"></i></button>
         </div>
         <!-- sECTION-6 RELATED TO COUNT OF SKIN LESIONS  -->
         <div class="form-section" id="section6">
-            <h2>Skin Symptoms</h2>
+            <h2>Skin Lesions/Nodules Count</h2>
             <label>Number of skin lesions/Nodules less than 5</label>
             <select name="Number of skin lessions/Nodules less than 5">
                 <option value="">--Select--</option>
@@ -341,14 +375,16 @@
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
             </select>
-            <button type="button" onclick="previousSection()">Previous</button>
-            <button type="button" onclick="nextSection()">Next</button>
+            <button type="button" class="prev-btn" onclick="previousSection()"><i class="fas fa-arrow-left"></i>
+                Previous</button>
+            <button type="button" class="next-btn" onclick="nextSection()">Next <i
+                    class="fas fa-arrow-right"></i></button>
         </div>
         <!-- Section 7: Treatment History and Submission -->
         <div class="form-section" id="section7">
             <h2>Treatment History</h2>
 
-            <label>Not treated MDT</label>
+            <label>Never treated MDT</label>
             <select name="Not treated MDT">
                 <option value="">--Select--</option>
                 <option value="No">No</option>
@@ -390,22 +426,35 @@
                 <option value="Yes">Yes</option>
             </select>
 
-            <label>Existing skin lesion /Nodules not increasing size /anaesthesia remains same</label>
+            <label>Existing skin lesion /Nodules not increasing in size / wrinkled /anaesthesia remains same</label>
             <select name="Existing skin lesion /Nodules  not increasing size /anaesthesia remains same">
                 <option value="">--Select--</option>
                 <option value="No">No</option>
                 <option value="Yes">Yes</option>
             </select>
-            <button type="button" onclick="previousSection()">Previous</button>
-            <button type="button" onclick="nextSection()">Next</button>
+            <button type="button" class="prev-btn" onclick="previousSection()"><i class="fas fa-arrow-left"></i>
+                Previous</button>
+            <button type="button" class="next-btn" onclick="nextSection()">Next <i
+                    class="fas fa-arrow-right"></i></button>
         </div>
         <div class="form-section" id="finalSection">
-            <h2>Here is the Detailed Report of the Patient</h2>
-            <button type="button" onclick="previousSection()">Previous</button>
-            <button type="submit">Predict</button>
+            <h2><i class="fas fa-file-medical"></i>Here is the Detailed Report of the Patient</h2>
+            <button type="button" class="prev-btn" onclick="previousSection()"><i class="fas fa-arrow-left"></i>
+                Previous</button>
+            <button type="submit" class="submit-btn"><i class="fas fa-check-circle"></i> Predict</button>
         </div>
     </form>
+    <!-- Prediction Results -->
     <div id="result" class="result-box"></div>
+
+    <!-- Hidden Download Button -->
+    <div style="margin-top: 15px; text-align: center;">
+        <button id="downloadReport"
+            style="display:none; background: linear-gradient(90deg, #ff9966, #ff5e62); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer;">
+            <i class="fas fa-download"></i> Download Report
+        </button>
+    </div>
+
     <!-- <script src="script.js"></script> -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
