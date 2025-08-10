@@ -130,7 +130,7 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
             // === HEADER ===
             doc.setFontSize(20);
             doc.setTextColor(...primaryColor);
-            doc.text("Leprosy Prediction Report", 105, 15, null, null, "center");
+            doc.text("Leprosy Prediction Summary", 105, 15, null, null, "center");
             doc.setDrawColor(...primaryColor);
             doc.line(20, 18, 190, 18);
 
