@@ -1,1 +1,1 @@
-.pkl
+Radial sensory loss (affecting the lateral 3 ½ digits, and associated with the area on the dorsum of the hand)
