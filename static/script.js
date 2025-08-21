@@ -90,6 +90,7 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
             <h3>Prediction Results</h3>
             <p><strong>Leprosy Diagnosis:</strong> ${result.Output_Classification}</p>
             <p><strong>Leprosy Treatment:</strong> ${result.Output_Treatment}</p>
+              <p><strong>Max (WHO) Disability Grade:</strong> ${result.Max_Disability_Grade}</p>
             <p><strong>Lepra Reaction Identification:</strong> ${result.Output_ReactionType}</p>
             <p><strong>Lepra Reaction Treatment:</strong> ${result.Output_ReactionTreatment}</p>
         `;
@@ -165,16 +166,18 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
             });
 
             // === PREDICTION OUTPUT BOX ===
+            // === PREDICTION OUTPUT BOX ===
             obsY += 6;
             doc.setFillColor(255, 243, 224); // Light peach
-            doc.rect(20, obsY - 6, 170, 40, "F");
+            doc.rect(20, obsY - 6, 170, 50, "F");   // height +10 to fit extra line
             doc.setFont(undefined, "bold");
             doc.text("Prediction Output", 22, obsY);
             doc.setFont(undefined, "normal");
             doc.text(`Leprosy Diagnosis: ${result.Output_Classification}`, 22, obsY + 8);
             doc.text(`Leprosy Treatment: ${result.Output_Treatment}`, 22, obsY + 14);
-            doc.text(`Lepra Reaction Identification: ${result.Output_ReactionType}`, 22, obsY + 20);
-            doc.text(`Lepra Reaction Treatment: ${result.Output_ReactionTreatment}`, 22, obsY + 26);
+            doc.text(`Max (WHO) Disability Grade: ${result.Max_Disability_Grade}`, 22, obsY + 20);
+            doc.text(`Lepra Reaction Identification: ${result.Output_ReactionType}`, 22, obsY + 26);
+            doc.text(`Lepra Reaction Treatment: ${result.Output_ReactionTreatment}`, 22, obsY + 32);
 
             // === FOOTER NOTE ===
             doc.setFontSize(9);

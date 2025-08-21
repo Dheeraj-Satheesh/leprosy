@@ -99,6 +99,17 @@ def predict():
         'Output_ReactionType': label_encoders['Output_ReactionType'].inverse_transform([pred[2]])[0],
         'Output_ReactionTreatment': label_encoders['Output_ReactionTreatment'].inverse_transform([pred[3]])[0],
     }
+     # 🔹 Disability Grade Calculation
+    grade_map = { "0": "Gr-0", "1": "Gr-I", "2": "Gr-II" }
+    eye = data.get("Disability_Grade_Eyes", "")
+    hand = data.get("Disability_Grade_Hands", "")
+    foot = data.get("Disability_Grade_Feet", "")
+
+    disability_grades = [eye, hand, foot]
+    disability_grades = [int(g) for g in disability_grades if g != ""]
+    max_grade = max(disability_grades) if disability_grades else None
+
+    result['Max_Disability_Grade'] = grade_map[str(max_grade)] if max_grade is not None else "N/A"
 
     # Add result and timestamp
     record.update(result)
