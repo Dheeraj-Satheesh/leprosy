@@ -193,12 +193,9 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
             doc.setFont(undefined, "normal");
             doc.text(`Leprosy Diagnosis: ${result.Output_Classification}`, 22, obsY + 8);
             doc.text(`Leprosy Treatment: ${result.Output_Treatment}`, 22, obsY + 14);
-            doc.text(`Eye Disability Grade: ${result.Eye_Disability_Grade}`, 22, obsY + 20);
-            doc.text(`Hand Disability Grade: ${result.Hand_Disability_Grade}`, 22, obsY + 26);
-            doc.text(`Foot Disability Grade: ${result.Foot_Disability_Grade}`, 22, obsY + 32);
-            doc.text(`Max (WHO) Disability Grade (Frontend): ${toRoman(maxDisability)}`, 22, obsY + 38);
-            doc.text(`Lepra Reaction Identification: ${result.Output_ReactionType}`, 22, obsY + 44);
-            doc.text(`Lepra Reaction Treatment: ${result.Output_ReactionTreatment}`, 22, obsY + 50);
+            doc.text(`Max (WHO) Disability Grade (Frontend): ${toRoman(maxDisability)}`, 22, obsY + 20);
+            doc.text(`Lepra Reaction Identification: ${result.Output_ReactionType}`, 22, obsY + 26);
+            doc.text(`Lepra Reaction Treatment: ${result.Output_ReactionTreatment}`, 22, obsY + 32);
 
             // === FOOTER NOTE ===
             doc.setFontSize(9);
@@ -234,3 +231,6 @@ document.addEventListener("DOMContentLoaded", function () {
 // <p><strong>Eye Disability Grade:</strong> ${result.Eye_Disability_Grade}</p>
 // <p><strong>Hand Disability Grade:</strong> ${result.Hand_Disability_Grade}</p>
 // <p><strong>Foot Disability Grade:</strong> ${result.Foot_Disability_Grade}</p>
+// doc.text(`Eye Disability Grade: ${result.Eye_Disability_Grade}`, 22, obsY + 20);
+//             doc.text(`Hand Disability Grade: ${result.Hand_Disability_Grade}`, 22, obsY + 26);
+//             doc.text(`Foot Disability Grade: ${result.Foot_Disability_Grade}`, 22, obsY + 32);
