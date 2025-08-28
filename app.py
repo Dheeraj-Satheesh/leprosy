@@ -88,7 +88,10 @@ def predict():
         elif isinstance(val, str) and val.lower() == "no":
             input_features.append(0)
         else:
-            input_features.append(float(val))
+            try:
+                input_features.append(float(val))
+            except:
+                input_features.append(0)
         record[key] = val
 
     # Get prediction from model
@@ -99,17 +102,54 @@ def predict():
         'Output_ReactionType': label_encoders['Output_ReactionType'].inverse_transform([pred[2]])[0],
         'Output_ReactionTreatment': label_encoders['Output_ReactionTreatment'].inverse_transform([pred[3]])[0],
     }
-     # 🔹 Disability Grade Calculation
-    grade_map = { "0": "Gr-0", "1": "Gr-I", "2": "Gr-II" }
-    eye = data.get("Disability_Grade_Eyes", "")
-    hand = data.get("Disability_Grade_Hands", "")
-    foot = data.get("Disability_Grade_Feet", "")
 
-    disability_grades = [eye, hand, foot]
-    disability_grades = [int(g) for g in disability_grades if g != ""]
-    max_grade = max(disability_grades) if disability_grades else None
+    # === DISABILITY GRADE: EYE ===
+    eye_features = [
+        "Blink absent less than 6 months(corneal reflex)",
+        "Blink absent more than 6 months(corneal reflex)",
+        "Inability to close eyes less than 6 months(Lagophthalmos)",
+        "Inability to close eyes more than 6 months(Lagophthalmos)"
+    ]
+    eye_grade = "Grade-II" if any(data.get(f, "No").lower() == "yes" for f in eye_features) else "Grade-0"
+    result["Eye_Disability_Grade"] = eye_grade
 
-    result['Max_Disability_Grade'] = grade_map[str(max_grade)] if max_grade is not None else "N/A"
+    # === DISABILITY GRADE: HAND ===
+    hand_critical_features = [
+        "Ulnar claw - Little & Ring fingers claw less than 6 months",
+        "Ulnar claw - Little & Ring fingers claw more than 6 months",
+        "Median Claw - Middle, Index, Thumb fingers claw less than 6 months",
+        "Median Claw - Middle, Index, Thumb fingers claw more than 6 months",
+        "Radial sensory loss (affecting the lateral 3 ½ digits, and associated with the area on the dorsum of the hand)",
+        "Wrist Drop- Unable to do wrist up less than 6 months",
+        "Wrist Drop- Unable to do wrist up more than 6 months"
+    ]
+    hand_loss_sensation = "Loss of sensation in the Palm(S)"
+
+    if any(data.get(f, "No").lower() == "yes" for f in hand_critical_features):
+        hand_grade = "Grade-II"
+    elif data.get(hand_loss_sensation, "No").lower() == "yes":
+        hand_grade = "Grade-I"
+    else:
+        hand_grade = "Grade-0"
+
+    result["Hand_Disability_Grade"] = hand_grade
+
+    # === DISABILITY GRADE: FOOT ===
+    foot_critical_features = [
+        "Ulceration in foot /feet; painless wounds or burns on foot/feet",
+        "Foot Drop -Unable to do foot up / Weakness / Dragging the foot while walking less than 6 months",
+        "Foot Drop- Unable to do foot up / Weakness / Dragging the foot while walking for more than 6 months"
+    ]
+    foot_loss_sensation = "Loss of sensation in sole of foot/feet"
+
+    if any(data.get(f, "No").lower() == "yes" for f in foot_critical_features):
+        foot_grade = "Grade-II"
+    elif data.get(foot_loss_sensation, "No").lower() == "yes":
+        foot_grade = "Grade-I"
+    else:
+        foot_grade = "Grade-0"
+
+    result["Foot_Disability_Grade"] = foot_grade
 
     # Add result and timestamp
     record.update(result)
@@ -131,7 +171,8 @@ def predict():
         row = [record["Patient_Name"]] + [record.get(k, "") for k in feature_order] + \
               [result['Output_Classification'], result['Output_Treatment'],
                result['Output_ReactionType'], result['Output_ReactionTreatment'],
-               record['Timestamp']]
+               result['Eye_Disability_Grade'], result['Hand_Disability_Grade'],
+               result['Foot_Disability_Grade'], record['Timestamp']]
 
         sheet.append_row(row)
 

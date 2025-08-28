@@ -6,6 +6,11 @@ function updateProgressBar() {
     const percent = ((currentSection + 1) / sections.length) * 100;
     progressBar.style.width = percent + "%";
 }
+function toRoman(num) {
+    if (num === 0) return "0"; // keep zero as digit
+    const map = { 1: "I", 2: "II" };
+    return map[num] || num;
+}
 
 function previousSection() {
     if (currentSection > 0) {
@@ -85,14 +90,23 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
 
         const result = await res.json();
 
+        // Compute Max WHO Disability Grade (frontend)
+        const gradeMap = { "Grade-0": 0, "Grade-I": 1, "Grade-II": 2 };
+        let grades = [
+            gradeMap[result.Eye_Disability_Grade] || 0,
+            gradeMap[result.Hand_Disability_Grade] || 0,
+            gradeMap[result.Foot_Disability_Grade] || 0
+        ];
+        let maxDisability = Math.max(...grades);
+
         // Display prediction results
         document.getElementById("result").innerHTML = `
             <h3>Prediction Results</h3>
             <p><strong>Leprosy Diagnosis:</strong> ${result.Output_Classification}</p>
             <p><strong>Leprosy Treatment:</strong> ${result.Output_Treatment}</p>
-              <p><strong>Max (WHO) Disability Grade:</strong> ${result.Max_Disability_Grade}</p>
             <p><strong>Lepra Reaction Identification:</strong> ${result.Output_ReactionType}</p>
             <p><strong>Lepra Reaction Treatment:</strong> ${result.Output_ReactionTreatment}</p>
+            <p><strong>Max (WHO) Disability Grade (Frontend):</strong> ${toRoman(maxDisability)}</p>
         `;
 
         // Show download button
@@ -106,7 +120,6 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
 
             // Colors
             const primaryColor = [255, 94, 98];
-            const sectionBg = [245, 245, 245];
 
             // Patient info
             let patientName = document.querySelector('input[name="name"]')?.value || "N/A";
@@ -114,7 +127,7 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
             let age = document.querySelector('input[name="Age"]')?.value || "N/A";
             let weight = document.querySelector('input[name="Weight"]')?.value || "N/A";
 
-            // Observations (Yes only)
+            // Observations (Yes only + Disability Grades)
             let observations = [];
             document.querySelectorAll("select, input").forEach(input => {
                 if (input.value && input.value.toLowerCase() === "yes") {
@@ -124,6 +137,12 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
                     observations.push(label.trim());
                 }
             });
+
+            // Add Disability Grades to Observations
+            observations.push(`Eye Disability Grade: ${result.Eye_Disability_Grade}`);
+            observations.push(`Hand Disability Grade: ${result.Hand_Disability_Grade}`);
+            observations.push(`Foot Disability Grade: ${result.Foot_Disability_Grade}`);
+
             if (observations.length === 0) {
                 observations.push("No positive observations reported.");
             }
@@ -141,7 +160,7 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
             doc.text(`Date: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 20, 25);
 
             // === PATIENT INFO BOX ===
-            doc.setFillColor(227, 242, 253); // Soft light blue
+            doc.setFillColor(227, 242, 253);
             doc.rect(20, 30, 170, 25, "F");
             doc.setFontSize(12);
             doc.setFont(undefined, "bold");
@@ -154,7 +173,7 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
 
             // === OBSERVATIONS BOX ===
             let obsY = 62;
-            doc.setFillColor(232, 245, 233); // Pale green
+            doc.setFillColor(232, 245, 233);
             doc.rect(20, obsY - 6, 170, (observations.length * 6) + 10, "F");
             doc.setFont(undefined, "bold");
             doc.text("Observations", 22, obsY);
@@ -166,28 +185,29 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
             });
 
             // === PREDICTION OUTPUT BOX ===
-            // === PREDICTION OUTPUT BOX ===
             obsY += 6;
-            doc.setFillColor(255, 243, 224); // Light peach
-            doc.rect(20, obsY - 6, 170, 50, "F");   // height +10 to fit extra line
+            doc.setFillColor(255, 243, 224);
+            doc.rect(20, obsY - 6, 170, 70, "F");
             doc.setFont(undefined, "bold");
             doc.text("Prediction Output", 22, obsY);
             doc.setFont(undefined, "normal");
             doc.text(`Leprosy Diagnosis: ${result.Output_Classification}`, 22, obsY + 8);
             doc.text(`Leprosy Treatment: ${result.Output_Treatment}`, 22, obsY + 14);
-            doc.text(`Max (WHO) Disability Grade: ${result.Max_Disability_Grade}`, 22, obsY + 20);
-            doc.text(`Lepra Reaction Identification: ${result.Output_ReactionType}`, 22, obsY + 26);
-            doc.text(`Lepra Reaction Treatment: ${result.Output_ReactionTreatment}`, 22, obsY + 32);
+            doc.text(`Eye Disability Grade: ${result.Eye_Disability_Grade}`, 22, obsY + 20);
+            doc.text(`Hand Disability Grade: ${result.Hand_Disability_Grade}`, 22, obsY + 26);
+            doc.text(`Foot Disability Grade: ${result.Foot_Disability_Grade}`, 22, obsY + 32);
+            doc.text(`Max (WHO) Disability Grade (Frontend): ${toRoman(maxDisability)}`, 22, obsY + 38);
+            doc.text(`Lepra Reaction Identification: ${result.Output_ReactionType}`, 22, obsY + 44);
+            doc.text(`Lepra Reaction Treatment: ${result.Output_ReactionTreatment}`, 22, obsY + 50);
 
             // === FOOTER NOTE ===
             doc.setFontSize(9);
-            doc.setTextColor(50, 50, 50); // Dark grey
+            doc.setTextColor(50, 50, 50);
             doc.setFont(undefined, "bold");
             doc.text(
-                'Note: "The leprosy prediction tool provides an assessment based on the clinical data you input. It is crucial to use this report as an aid and to base the final treatment decisions on your own clinical judgment, considering the patient\'s physical examination, condition, and medical history. Additionally, always follow the national guidelines for leprosy treatment."',
+                'Note: "The leprosy prediction tool provides an assessment based on the clinical data you input. Use this report as an aid, but base final decisions on clinical judgment and national guidelines."',
                 20, 280, { maxWidth: 170 }
             );
-
 
             // Save PDF
             doc.save(`Leprosy_Report_${patientName}.pdf`);
@@ -211,3 +231,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 5000);
     }
 });
+// <p><strong>Eye Disability Grade:</strong> ${result.Eye_Disability_Grade}</p>
+// <p><strong>Hand Disability Grade:</strong> ${result.Hand_Disability_Grade}</p>
+// <p><strong>Foot Disability Grade:</strong> ${result.Foot_Disability_Grade}</p>
