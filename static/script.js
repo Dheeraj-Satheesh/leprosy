@@ -106,7 +106,7 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
             <p><strong>Leprosy Treatment:</strong> ${result.Output_Treatment}</p>
             <p><strong>Lepra Reaction Identification:</strong> ${result.Output_ReactionType}</p>
             <p><strong>Lepra Reaction Treatment:</strong> ${result.Output_ReactionTreatment}</p>
-            <p><strong>Max (WHO) Disability Grade (Frontend):</strong> ${toRoman(maxDisability)}</p>
+            <p><strong>Max (WHO) Disability Grade:</strong> ${toRoman(maxDisability)}</p>
         `;
 
         // Show download button
@@ -193,7 +193,7 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
             doc.setFont(undefined, "normal");
             doc.text(`Leprosy Diagnosis: ${result.Output_Classification}`, 22, obsY + 8);
             doc.text(`Leprosy Treatment: ${result.Output_Treatment}`, 22, obsY + 14);
-            doc.text(`Max (WHO) Disability Grade (Frontend): ${toRoman(maxDisability)}`, 22, obsY + 20);
+            doc.text(`Max (WHO) Disability Grade: ${toRoman(maxDisability)}`, 22, obsY + 20);
             doc.text(`Lepra Reaction Identification: ${result.Output_ReactionType}`, 22, obsY + 26);
             doc.text(`Lepra Reaction Treatment: ${result.Output_ReactionTreatment}`, 22, obsY + 32);
 
