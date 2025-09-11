@@ -234,3 +234,21 @@ document.addEventListener("DOMContentLoaded", function () {
 // doc.text(`Eye Disability Grade: ${result.Eye_Disability_Grade}`, 22, obsY + 20);
 //             doc.text(`Hand Disability Grade: ${result.Hand_Disability_Grade}`, 22, obsY + 26);
 //             doc.text(`Foot Disability Grade: ${result.Foot_Disability_Grade}`, 22, obsY + 32);
+
+// Dark Mode Toggle
+document.addEventListener("DOMContentLoaded", () => {
+    const toggle = document.getElementById("darkModeToggle");
+    toggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark-mode");
+
+        // change icon dynamically
+        const icon = toggle.querySelector("i");
+        if (document.body.classList.contains("dark-mode")) {
+            icon.classList.remove("fa-moon");
+            icon.classList.add("fa-sun");
+        } else {
+            icon.classList.remove("fa-sun");
+            icon.classList.add("fa-moon");
+        }
+    });
+});

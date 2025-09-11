@@ -255,3 +255,121 @@ button:hover {
   from {opacity: 1;}
   to {opacity: 0; visibility: hidden;}
 }
+/* ===== HEADER ===== */
+.form-header {
+  text-align: center;
+  padding: 18px;
+  background: linear-gradient(90deg, #36d1dc, #5b86e5);
+  color: white;
+  font-size: 1.8rem;
+  font-weight: bold;
+  border-radius: 10px;
+  margin: 10px auto 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  max-width: 900px;
+}
+
+/* ===== FOOTER ===== */
+.form-footer {
+  text-align: center;
+  padding: 15px;
+  background: linear-gradient(90deg, #ff9966, #ff5e62);
+  color: white;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  margin: 30px auto 0;
+  box-shadow: 0 -4px 15px rgba(0,0,0,0.15);
+  max-width: 900px;
+}
+
+/* ===== MOBILE OPTIMIZATION ===== */
+@media (max-width: 768px) {
+  .form-header {
+    font-size: 1.3rem;
+    padding: 12px;
+    margin: 8px auto 15px;
+    border-radius: 8px;
+  }
+
+  .form-footer {
+    font-size: 0.8rem;
+    padding: 10px;
+    margin: 20px auto 0;
+    border-radius: 8px;
+  }
+}
+.form-header h1 {
+  font-size: 1.5rem;   /* reduce font size */
+  white-space: nowrap; /* prevent wrapping to new line */
+  overflow: hidden;    /* prevent overflow outside box */
+  text-overflow: ellipsis; /* add "..." if it overflows on small screens */
+}
+input, select {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 14px;
+  transition: all 0.3s;
+}
+input:focus, select:focus {
+  border-color: #36d1dc;
+  box-shadow: 0 0 6px rgba(54,209,220,0.5);
+}
+
+.dark-toggle {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: 15px;
+  transition: transform 0.3s ease;
+}
+.dark-toggle:hover {
+  transform: rotate(20deg) scale(1.1);
+}
+/* === DARK MODE === */
+body.dark-mode {
+  background: #1a202c;
+  color: #f7fafc;
+}
+
+body.dark-mode form {
+  background: rgba(30, 30, 30, 0.95);
+  color: #f7fafc;
+}
+
+body.dark-mode h2,
+body.dark-mode label {
+  color: #e2e8f0;
+}
+
+body.dark-mode input,
+body.dark-mode select {
+  background: #2d3748;
+  color: white;
+  border: 1px solid #4a5568;
+}
+
+body.dark-mode .result-box {
+  background: #2d3748;
+  border-left: 6px solid #63b3ed;
+  color: #f7fafc;
+}
+
+body.dark-mode .form-footer {
+  background: #2d3748;
+}
+body.dark-mode form::before {
+  background-image: none;
+}
+.form-section {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: all 0.4s ease-in-out;
+  display: none;
+}
+.form-section.active {
+  opacity: 1;
+  transform: translateX(0);
+  display: block;
+}
