@@ -108,6 +108,11 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
             <p><strong>Lepra Reaction Treatment:</strong> ${result.Output_ReactionTreatment}</p>
             <p><strong>Max (WHO) Disability Grade:</strong> ${toRoman(maxDisability)}</p>
         `;
+        // Animate result box
+        const resultBox = document.getElementById("result");
+        resultBox.classList.remove("show");  // reset
+        void resultBox.offsetWidth;          // force reflow
+        resultBox.classList.add("show");     // trigger animation
 
         // Show download button
         const downloadBtn = document.getElementById("downloadReport");
@@ -172,17 +177,34 @@ document.getElementById("leprosyForm").addEventListener("submit", async function
             doc.text(`Weight: ${weight}`, 90, 48);
 
             // === OBSERVATIONS BOX ===
+            // === OBSERVATIONS BOX ===
             let obsY = 62;
+
+            // Calculate total height dynamically
+            let totalHeight = 0;
+            observations.forEach(obs => {
+                let splitText = doc.splitTextToSize(`• ${obs}`, 160);
+                totalHeight += splitText.length * 6;
+            });
+
+            // Draw box with correct height
             doc.setFillColor(232, 245, 233);
-            doc.rect(20, obsY - 6, 170, (observations.length * 6) + 10, "F");
+            doc.rect(20, obsY - 6, 170, totalHeight + 12, "F");
+
+            // Add title
             doc.setFont(undefined, "bold");
             doc.text("Observations", 22, obsY);
             doc.setFont(undefined, "normal");
             obsY += 6;
+
+            // Add wrapped observations
             observations.forEach(obs => {
-                doc.text(`• ${obs}`, 25, obsY);
-                obsY += 6;
+                let splitText = doc.splitTextToSize(`• ${obs}`, 160);
+                doc.text(splitText, 25, obsY);
+                obsY += splitText.length * 6;
             });
+
+
 
             // === PREDICTION OUTPUT BOX ===
             obsY += 6;

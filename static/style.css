@@ -114,10 +114,14 @@ button:hover {
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
+  opacity: 0; /* initially hidden */
+}
+
+.result-box.show {
+  opacity: 1;
   animation: slideInBounce 0.8s ease;
 }
 
-/* Keyframes for slide-in with bounce */
 @keyframes slideInBounce {
   0% {
     opacity: 0;
@@ -125,15 +129,16 @@ button:hover {
   }
   70% {
     opacity: 1;
-    transform: translateX(10%); /* overshoot a little */
+    transform: translateX(10%);
   }
   90% {
-    transform: translateX(-5%); /* bounce back */
+    transform: translateX(-5%);
   }
   100% {
-    transform: translateX(0); /* settle */
+    transform: translateX(0);
   }
 }
+
 
 
 .form-section {
