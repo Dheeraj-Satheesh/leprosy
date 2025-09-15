@@ -16,9 +16,8 @@ def home():
 model = joblib.load("model_rf.pkl")
 label_encoders = {
     'Output_Classification': joblib.load('enc_classification.pkl'),
-    'Output_Treatment': joblib.load('enc_treatment.pkl'),
-    'Output_ReactionType': joblib.load('enc_reactiontype.pkl'),
-    'Output_ReactionTreatment': joblib.load('enc_reactiontreatment.pkl')
+    'Output_Treatment': joblib.load('enc_treatment.pkl')
+    # Removed reaction encoders – now handled by rules
 }
 
 # Feature order expected by the model
@@ -94,13 +93,11 @@ def predict():
                 input_features.append(0)
         record[key] = val
 
-    # Get prediction from model
+    # === MODEL PREDICTIONS (Classification + Treatment) ===
     pred = model.predict([input_features])[0]
     result = {
         'Output_Classification': label_encoders['Output_Classification'].inverse_transform([pred[0]])[0],
         'Output_Treatment': label_encoders['Output_Treatment'].inverse_transform([pred[1]])[0],
-        'Output_ReactionType': label_encoders['Output_ReactionType'].inverse_transform([pred[2]])[0],
-        'Output_ReactionTreatment': label_encoders['Output_ReactionTreatment'].inverse_transform([pred[3]])[0],
     }
 
     # === DISABILITY GRADE: EYE ===
@@ -150,6 +147,40 @@ def predict():
         foot_grade = "Grade-0"
 
     result["Foot_Disability_Grade"] = foot_grade
+
+    # === REACTION LOGIC (Rule-based) ===
+    lesion = data.get("Skin Lesions- Raised, Redness, Warmth,Painful (Hypo/Erythema)", "No").lower()
+    nodules = data.get("Nodules-Painful swellings under the skin", "No").lower()
+
+    less_than_6_features = [
+        "Blink absent less than 6 months(corneal reflex)",
+        "Inability to close eyes less than 6 months(Lagophthalmos)",
+        "Ulnar claw - Little & Ring fingers claw less than 6 months",
+        "Median Claw - Middle, Index, Thumb fingers claw less than 6 months",
+        "Wrist Drop- Unable to do wrist up less than 6 months",
+        "Foot Drop -Unable to do foot up / Weakness / Dragging the foot while walking less than 6 months"
+    ]
+    any_less6_yes = any(data.get(f, "No").lower() == "yes" for f in less_than_6_features)
+    all_less6_no = all(data.get(f, "No").lower() == "no" for f in less_than_6_features)
+
+    if lesion == "yes" and any_less6_yes:
+        reaction = "Type I reaction - with Neuritis"
+        reaction_treatment = "Start Prednisolone"
+    elif lesion == "yes" and all_less6_no:
+        reaction = "Type I reaction - without Neuritis"
+        reaction_treatment = "Start Prednisolone"
+    elif nodules == "yes" and any_less6_yes:
+        reaction = "Type II reaction - with Neuritis"
+        reaction_treatment = "Start Prednisolone"
+    elif nodules == "yes" and all_less6_no:
+        reaction = "Type II reaction - without Neuritis"
+        reaction_treatment = "Start Prednisolone"
+    else:
+        reaction = "No Reaction found at the time of Examination"
+        reaction_treatment = "Not Required for Reaction Treatment at present"
+
+    result["Output_ReactionType"] = reaction
+    result["Output_ReactionTreatment"] = reaction_treatment
 
     # Add result and timestamp
     record.update(result)
