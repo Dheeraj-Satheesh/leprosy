@@ -17,7 +17,7 @@ model = joblib.load("model_rf.pkl")
 label_encoders = {
     'Output_Classification': joblib.load('enc_classification.pkl'),
     'Output_Treatment': joblib.load('enc_treatment.pkl')
-    # Removed reaction encoders – now handled by rules
+    # Reaction handled by rules
 }
 
 # Feature order expected by the model
@@ -148,7 +148,7 @@ def predict():
 
     result["Foot_Disability_Grade"] = foot_grade
 
-    # === REACTION LOGIC (Rule-based) ===
+    # === REACTION LOGIC (Refined) ===
     lesion = data.get("Skin Lesions- Raised, Redness, Warmth,Painful (Hypo/Erythema)", "No").lower()
     nodules = data.get("Nodules-Painful swellings under the skin", "No").lower()
 
@@ -163,14 +163,16 @@ def predict():
     any_less6_yes = any(data.get(f, "No").lower() == "yes" for f in less_than_6_features)
     all_less6_no = all(data.get(f, "No").lower() == "no" for f in less_than_6_features)
 
-    if lesion == "yes" and any_less6_yes:
-        reaction = "Type I reaction - with Neuritis"
+    if any_less6_yes:
+        if lesion == "yes":
+            reaction = "Type I reaction - with Neuritis"
+        elif nodules == "yes":
+            reaction = "Type II reaction - with Neuritis"
+        else:
+            reaction = "Neuritis"
         reaction_treatment = "Start Prednisolone"
     elif lesion == "yes" and all_less6_no:
         reaction = "Type I reaction - without Neuritis"
-        reaction_treatment = "Start Prednisolone"
-    elif nodules == "yes" and any_less6_yes:
-        reaction = "Type II reaction - with Neuritis"
         reaction_treatment = "Start Prednisolone"
     elif nodules == "yes" and all_less6_no:
         reaction = "Type II reaction - without Neuritis"
