@@ -392,3 +392,70 @@ body.dark-mode form::before {
   transform: translateX(0);
   display: block;
 }
+/* ===== SITE FOOTER ===== */
+.site-footer {
+  margin-top: 40px;
+  padding: 15px 20px;
+  text-align: center;
+  background: #222;
+  color: #f1f1f1;
+  font-size: 0.95rem;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.site-footer .social-links {
+  margin-top: 10px;
+}
+
+.site-footer .social-links a {
+  color: #f1f1f1;
+  margin: 0 10px;
+  font-size: 1.2rem;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.site-footer .social-links a:hover {
+  color: #36d1dc; /* accent color */
+  transform: scale(1.2);
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  .site-footer {
+    font-size: 0.8rem;
+    padding: 12px 10px;
+  }
+
+  .site-footer .social-links a {
+    margin: 0 6px;
+    font-size: 1rem;
+  }
+}
+/* Label + icon alignment */
+label {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* space between icon and text */
+  margin-top: 15px;
+  font-weight: 600;
+  color: #333;
+  font-size: 1rem;
+}
+
+/* Icons inside labels */
+label i {
+  font-size: 1.1rem;
+  color: #444;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  label {
+    font-size: 0.9rem;
+    gap: 6px;
+  }
+  label i {
+    font-size: 1rem; /* shrink icon */
+  }
+}
