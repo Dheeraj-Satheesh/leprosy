@@ -148,41 +148,50 @@ def predict():
 
     result["Foot_Disability_Grade"] = foot_grade
 
-    # === REACTION LOGIC (Refined) ===
+        # === REACTION LOGIC (Refined) ===
     lesion = data.get("Skin Lesions- Raised, Redness, Warmth,Painful (Hypo/Erythema)", "No").lower()
     nodules = data.get("Nodules-Painful swellings under the skin", "No").lower()
 
-    less_than_6_features = [
-        "Blink absent less than 6 months(corneal reflex)",
-        "Inability to close eyes less than 6 months(Lagophthalmos)",
-        "Ulnar claw - Little & Ring fingers claw less than 6 months",
-        "Median Claw - Middle, Index, Thumb fingers claw less than 6 months",
-        "Wrist Drop- Unable to do wrist up less than 6 months",
-        "Foot Drop -Unable to do foot up / Weakness / Dragging the foot while walking less than 6 months"
-    ]
-    any_less6_yes = any(data.get(f, "No").lower() == "yes" for f in less_than_6_features)
-    all_less6_no = all(data.get(f, "No").lower() == "no" for f in less_than_6_features)
-
-    if any_less6_yes:
-        if lesion == "yes":
-            reaction = "Type I reaction - with Neuritis"
-        elif nodules == "yes":
-            reaction = "Type II reaction - with Neuritis"
-        else:
-            reaction = "Neuritis"
-        reaction_treatment = "Start Prednisolone"
-    elif lesion == "yes" and all_less6_no:
-        reaction = "Type I reaction - without Neuritis"
-        reaction_treatment = "Start Prednisolone"
-    elif nodules == "yes" and all_less6_no:
-        reaction = "Type II reaction - without Neuritis"
-        reaction_treatment = "Start Prednisolone"
+    # ✅ FIRST CHECK: Required for slit-skin smear for AFB
+    if (
+        result['Output_Classification'] == "Required for slit-skin smear for AFB"
+        and (lesion == "yes" or nodules == "yes")
+    ):
+        reaction = "Suspect of Reaction"
+        reaction_treatment = "Reaction treatment based on clinical findings"
     else:
-        reaction = "No Reaction found at the time of Examination"
-        reaction_treatment = "Not Required for Reaction Treatment at present"
+        less_than_6_features = [
+            "Blink absent less than 6 months(corneal reflex)",
+            "Inability to close eyes less than 6 months(Lagophthalmos)",
+            "Ulnar claw - Little & Ring fingers claw less than 6 months",
+            "Median Claw - Middle, Index, Thumb fingers claw less than 6 months",
+            "Wrist Drop- Unable to do wrist up less than 6 months",
+            "Foot Drop -Unable to do foot up / Weakness / Dragging the foot while walking less than 6 months"
+        ]
+        any_less6_yes = any(data.get(f, "No").lower() == "yes" for f in less_than_6_features)
+        all_less6_no = all(data.get(f, "No").lower() == "no" for f in less_than_6_features)
+
+        if any_less6_yes:
+            if lesion == "yes":
+                reaction = "Type I reaction - with Neuritis"
+            elif nodules == "yes":
+                reaction = "Type II reaction - with Neuritis"
+            else:
+                reaction = "Neuritis"
+            reaction_treatment = "Start Prednisolone"
+        elif lesion == "yes" and all_less6_no:
+            reaction = "Type I reaction - without Neuritis"
+            reaction_treatment = "Start Prednisolone"
+        elif nodules == "yes" and all_less6_no:
+            reaction = "Type II reaction - without Neuritis"
+            reaction_treatment = "Start Prednisolone"
+        else:
+            reaction = "No Reaction found at the time of Examination"
+            reaction_treatment = "Not Required for Reaction Treatment at present"
 
     result["Output_ReactionType"] = reaction
     result["Output_ReactionTreatment"] = reaction_treatment
+
 
     # Add result and timestamp
     record.update(result)
